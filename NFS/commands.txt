@@ -1,0 +1,21 @@
+sudo apt update
+sudo apt install nfs-kernel-server -y
+
+sudo mkdir -p /nfs_share
+sudo chmod 777 /nfs_share
+echo "Hello from Server" | sudo tee /nfs_share/test.txt
+
+sudo nano /etc/exports
+/nfs_share *(rw,sync,no_subtree_check)
+
+sudo exportfs -a
+sudo systemctl restart nfs-kernel-server
+
+sudo mkdir -p /mnt/nfs_client
+sudo mount 127.0.0.1:/nfs_share /mnt/nfs_client
+
+ls /mnt/nfs_client
+
+echo "Hello from Client" | sudo tee /mnt/nfs_client/client.txt
+
+ls /nfs_share
